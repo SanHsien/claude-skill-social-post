@@ -1,7 +1,22 @@
 #!/usr/bin/env node
 /** Closed-world JavaScript architecture gate for the Chrome comment surface. */
 
-import { lstat, readFile, readdir } from "node:fs/promises";
+import { lstat, open, readFile, readdir } from "node:fs/promises";
+
+// Read a file already vetted with lstat through a descriptor whose (dev, ino)
+// matches that lstat, so a swap between the check and the read is refused.
+async function readVettedFile(path, vetted) {
+  const handle = await open(path, "r");
+  try {
+    const current = await handle.stat();
+    if (!current.isFile() || current.dev !== vetted.dev || current.ino !== vetted.ino) {
+      throw new Error(`file changed while being read: ${path}`);
+    }
+    return await handle.readFile();
+  } finally {
+    await handle.close();
+  }
+}
 import { dirname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -56,7 +71,7 @@ async function inventoryEntry(absolute) {
   if (!stat.isFile() || stat.isSymbolicLink()) {
     throw new Error(`closed inventory member is not a regular file: ${relative}`);
   }
-  const bytes = await readFile(absolute);
+  const bytes = await readVettedFile(absolute, stat);
   return {
     path: relative,
     bytes: bytes.length,

@@ -71,13 +71,17 @@ async function stageTextFile(target, contents) {
       required: true,
     });
     await requireSafePath(target, "file", "fixture receipt target");
-    handle = await open(temporary, "wx", 0o600);
+    handle = await open(temporary, "wx+", 0o600);
     await handle.writeFile(contents, { encoding: "utf8" });
     await handle.sync();
+    // Read back through the creating descriptor, not the path.
+    const expected = Buffer.from(contents, "utf8");
+    const readBack = Buffer.alloc(expected.length + 1);
+    const { bytesRead } = await handle.read(readBack, 0, readBack.length, 0);
     await handle.close();
     handle = null;
     await requireSafePath(temporary, "file", "fixture receipt staged file", { required: true });
-    if ((await readFile(temporary, "utf8")) !== contents) {
+    if (!readBack.subarray(0, bytesRead).equals(expected)) {
       throw new Error("fixture receipt staged read-back mismatch");
     }
     return Object.freeze({ temporary, target, contents });
