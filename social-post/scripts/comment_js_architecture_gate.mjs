@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Closed-world JavaScript architecture gate for the Chrome comment surface. */
 
-import { lstat, open, readFile, readdir } from "node:fs/promises";
+import { lstat, open, readdir } from "node:fs/promises";
 
 // Read a file already vetted with lstat through a descriptor whose (dev, ino)
 // matches that lstat, so a swap between the check and the read is refused.
