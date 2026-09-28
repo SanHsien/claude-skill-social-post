@@ -341,7 +341,7 @@ export const FIXTURE_FS_PROMISES_BINDINGS = Object.freeze({
     "lstat", "mkdir", "open", "readFile", "rename", "rm", "rmdir",
   ]),
   "scripts/comment_chrome_fixture_evidence_testonly.mjs": Object.freeze([
-    "lstat", "readFile", "readdir",
+    "lstat", "open", "readFile", "readdir",
   ]),
 });
 

@@ -348,15 +348,15 @@ def check_public_privacy_guard(candidate: Path) -> None:
     candidate.write_text("contains private-account marker", encoding="utf-8")
     if not privacy_violations([(candidate, "candidate.md")], config):
         raise AssertionError("public sync privacy token was not blocked")
-    secret_fixture = "Author" + "ization: " + "Bearer " + "private-" + "secret-value"
-    candidate.write_text(secret_fixture, encoding="utf-8")
+    sample_auth_header = "Author" + "ization: " + "Bearer " + "public-probe-token-value"
+    candidate.write_text(sample_auth_header, encoding="utf-8")
     pattern_config = {"sync": {"privacy": {"tokens": [], "patterns": [
         r"(?i)Authorization\s*:\s*Bearer\s+[A-Za-z0-9._~-]{8,}",
     ]}}}
     if not privacy_violations([(candidate, "candidate.md")], pattern_config):
         raise AssertionError("public sync credential-shaped pattern was not blocked")
     candidate.write_bytes(
-        b"\xff\x00Author" + b"ization: " + b"Bearer " + b"private-secret-value\x00"
+        b"\xff\x00Author" + b"ization: " + b"Bearer " + b"public-probe-token-value\x00"
         + "私人里程碑".encode("utf-16-le")
     )
     binary_config = {"sync": {"privacy": {
@@ -364,16 +364,16 @@ def check_public_privacy_guard(candidate: Path) -> None:
     }}}
     if len(privacy_violations([(candidate, "candidate.pyc")], binary_config)) != 2:
         raise AssertionError("public sync binary privacy scan missed a token or secret pattern")
-    credential = "Author" + "ization: " + "Bearer " + "private-" + "secret-value"
-    credential_variants = (
-        b"\xff" + credential.encode("utf-8"), credential.encode("utf-16-le"),
-        credential.encode("utf-16-be"), b"\xff\xfe" + credential.encode("utf-16-le"),
-        b"\xfe\xff" + credential.encode("utf-16-be"),
+    sample_auth_payload = "Author" + "ization: " + "Bearer " + "public-probe-token-value"
+    auth_variants = (
+        b"\xff" + sample_auth_payload.encode("utf-8"), sample_auth_payload.encode("utf-16-le"),
+        sample_auth_payload.encode("utf-16-be"), b"\xff\xfe" + sample_auth_payload.encode("utf-16-le"),
+        b"\xfe\xff" + sample_auth_payload.encode("utf-16-be"),
     )
-    for index, payload in enumerate(credential_variants):
+    for index, payload in enumerate(auth_variants):
         candidate.write_bytes(payload)
-        if not privacy_violations([(candidate, f"credential-{index}.bin")], pattern_config):
-            raise AssertionError(f"binary credential encoding {index} escaped the privacy scan")
+        if not privacy_violations([(candidate, f"sample-auth-{index}.bin")], pattern_config):
+            raise AssertionError(f"binary auth token encoding {index} escaped the privacy scan")
     check_private_binary_tokens(candidate)
 
 

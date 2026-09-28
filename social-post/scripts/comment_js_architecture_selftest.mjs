@@ -280,7 +280,7 @@ function runFixtureWriteAuthorityChecks(assertCheck) {
   const evidencePath = "scripts/comment_chrome_fixture_evidence_testonly.mjs";
   const receiptPath = "scripts/comment_chrome_fixture_receipt_testonly.mjs";
   const e2ePath = "scripts/comment_fixture_browser_e2e.mjs";
-  const evidenceImport = 'import { lstat, readFile, readdir } from "node:fs/promises";';
+  const evidenceImport = 'import { lstat, open, readFile, readdir } from "node:fs/promises";';
   const receiptImport = `export function validateThreePlatformFixtureReceipt() {}
 export function parseCanonicalThreePlatformFixtureReceipt() {}
 `;

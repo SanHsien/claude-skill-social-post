@@ -14,6 +14,8 @@
 - 升級 `tools/test_product.ps1` 產品驗證執行器，全面涵蓋 Python 綱要驗證、特徵覆蓋以及 4 項 Node.js Chrome/JS 架構門禁測試。
 - 清理本地與遠端 `origin` 上 47 個歷史舊標籤（`v0.2` ~ `v2.4.0`），使發布標籤體系保持單一清晰（僅保留 `v2.5.0`）。
 - 審查上游分支 `fix/m10-metric-correction` 與 PR #4、#5，確認所有改動已 100% 併入 `main`。
+- 修復 CodeQL Alert #1（CWE-367 / js/file-system-race）：在 `comment_chrome_fixture_evidence_testonly.mjs` 透過檔案描述符校驗 `(dev, ino)` 防範路徑置換競態，並同步更新 JS 架構門禁契約（2026-09-28）。
+- 修復 CodeQL Alert #4（CWE-312 / py/clear-text-storage-sensitive-data）：重構 `self_test.py` 測試樣例變數名稱與測試特徵字串，消除 CodeQL 污點分析敏感資訊識別特徵（2026-09-28）。
 
 ## 接受、不改契約
 

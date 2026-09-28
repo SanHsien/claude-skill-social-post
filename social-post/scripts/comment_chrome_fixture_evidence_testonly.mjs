@@ -2,12 +2,27 @@
 
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { lstat, readFile, readdir } from "node:fs/promises";
+import { lstat, open, readFile, readdir } from "node:fs/promises";
 import { createServer } from "node:http";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { digestObject } from "./comment_chrome_common.mjs";
+
+// Read a file already vetted with lstat through a descriptor whose (dev, ino)
+// matches that lstat, so a swap between the check and the read is refused.
+async function readVettedFile(path, vetted) {
+  const handle = await open(path, "r");
+  try {
+    const current = await handle.stat();
+    if (!current.isFile() || current.dev !== vetted.dev || current.ino !== vetted.ino) {
+      throw new Error(`file changed while being read: ${path}`);
+    }
+    return await handle.readFile();
+  } finally {
+    await handle.close();
+  }
+}
 
 const SKILL_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const ARCHITECTURE_RECEIPT_PATH = ".rd/receipts/js-architecture-gate.json";
@@ -129,7 +144,7 @@ async function snapshotBoundFiles(relativePaths, { missingAllowed }) {
       rows.push(Object.freeze({ path: relative, exists: false }));
       continue;
     }
-    const bytes = await readFile(absolute);
+    const bytes = await readVettedFile(absolute, stat);
     rows.push(Object.freeze({
       path: relative,
       exists: true,
@@ -200,7 +215,7 @@ async function snapshotDirectoryTree(relativeRoot) {
         rows.push({ path: `${relative}/`, exists: true, type: "directory" });
         await visit(absolute, relative);
       } else if (stat.isFile()) {
-        const bytes = await readFile(absolute);
+        const bytes = await readVettedFile(absolute, stat);
         rows.push({
           path: relative,
           exists: true,
@@ -219,10 +234,10 @@ async function snapshotDirectoryTree(relativeRoot) {
 
 async function requireLivePolicyDisabled() {
   const path = join(SKILL_ROOT, "references", "comment-policy.json");
-  await requireSafeRelativePath("references/comment-policy.json", {
+  const stat = await requireSafeRelativePath("references/comment-policy.json", {
     kind: "file", missingAllowed: false,
   });
-  const bytes = await readFile(path);
+  const bytes = await readVettedFile(path, stat);
   const policy = JSON.parse(bytes.toString("utf8"));
   if (policy?.live_browser_actuation_enabled !== false) {
     throw new Error("three-platform fixture requires live_browser_actuation_enabled=false");
@@ -241,16 +256,17 @@ export async function snapshotFixtureIntegrity() {
 }
 
 export async function requireFreshFixtureArchitectureGate(sourceSnapshot) {
-  await requireSafeRelativePath(ARCHITECTURE_RECEIPT_PATH, {
+  const receiptPath = join(SKILL_ROOT, ...ARCHITECTURE_RECEIPT_PATH.split("/"));
+  const sidecarPath = join(SKILL_ROOT, ...ARCHITECTURE_SIDECAR_PATH.split("/"));
+  const receiptStat = await requireSafeRelativePath(ARCHITECTURE_RECEIPT_PATH, {
     kind: "file", missingAllowed: false,
   });
-  await requireSafeRelativePath(ARCHITECTURE_SIDECAR_PATH, {
+  const sidecarStat = await requireSafeRelativePath(ARCHITECTURE_SIDECAR_PATH, {
     kind: "file", missingAllowed: false,
   });
-  const receiptBytes = await readFile(join(SKILL_ROOT, ...ARCHITECTURE_RECEIPT_PATH.split("/")));
-  const sidecar = await readFile(
-    join(SKILL_ROOT, ...ARCHITECTURE_SIDECAR_PATH.split("/")), "utf8",
-  );
+  const receiptBytes = await readVettedFile(receiptPath, receiptStat);
+  const sidecarBytes = await readVettedFile(sidecarPath, sidecarStat);
+  const sidecar = sidecarBytes.toString("utf8");
   const receiptSha256 = sha256Bytes(receiptBytes);
   if (sidecar !== `${receiptSha256}  js-architecture-gate.json\n`) {
     throw new Error("fixture architecture gate sidecar does not bind the receipt bytes");
@@ -373,8 +389,8 @@ export async function startCanonicalFixtureServer() {
     ["/fixture-runtime.js", "scripts/comment_adapter_fixtures/fixture-runtime.js", "text/javascript; charset=utf-8"],
   ]) {
     const absolute = join(SKILL_ROOT, ...relative.split("/"));
-    await requireSafeRelativePath(relative, { kind: "file", missingAllowed: false });
-    const body = await readFile(absolute);
+    const stat = await requireSafeRelativePath(relative, { kind: "file", missingAllowed: false });
+    const body = await readVettedFile(absolute, stat);
     routes.set(route, Object.freeze({ relative, contentType, body, sha256: sha256Bytes(body) }));
   }
   const requests = [];
