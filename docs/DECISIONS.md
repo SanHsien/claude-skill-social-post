@@ -43,3 +43,17 @@
   - 本地與 `origin` 刪除 `v0.2` 至 `v2.4.0` 之 47 個舊 tag。
   - 僅保留最新穩定版本標籤 `v2.5.0`。
 - **後果**：遠端與本地標籤體系保持最精簡狀態。
+## D-06: 上游審查 3 commit（0c7b53f..c2641ba，2026-09-30）
+
+- **範圍**：3 個 commit、0 個新 PR（水位 #5）、0 個新 issue（水位 #5）。三筆同日進入上游 `main`。
+- **決定**：
+  - `c2641ba`（新增 `chatgpt-socialpost/`）：not-applicable，ChatGPT Chat 專用入口，本 fork 面向 Claude Code；不引進。
+  - `ddb0897`（ChatGPT 降階流程、未校準 voice 防護，3 檔）：not-applicable，內容為 ChatGPT 無 shell 情境；
+    通用條款（修稿保留使用者已刪格式）待日後語氣流程調整時再抽。
+  - `f2ba749`（X For You 演算法文件＋Instagram 選取、CUA runtime、Threads 讀取器等 29 檔 +1379/-132）：
+    **adoption pending：** 涉及已登入瀏覽器實機操作的留言自動化，行數大、無法在本機驗證實際平台行為；
+    本 fork 另有 CodeQL 修補（`comment_js_architecture_*`、`self_test.py`），與其重疊。
+    已驗證 `git apply --check`（僅 `social-post/`、`chatgpt-socialpost/`）可乾淨套用；README 有衝突。
+- **觸發條件**：要用 Instagram／Threads 留言自動化，或 X 演算法文件被需要時，套用該 patch 並跑
+  `tools\test_product.ps1`（含 Node 測試）後再採用。
+- **後果**：baseline 推進到 `c2641ba`，代表已審查，不代表已合併。

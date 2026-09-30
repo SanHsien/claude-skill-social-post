@@ -2,7 +2,7 @@
 
 記錄如何安全、可重複地追蹤 [`Hao0321/claude-skill-social-post`](https://github.com/Hao0321/claude-skill-social-post) 的更新。
 
-當前審查基準 Commit 為 `0c7b53f` (2026-09-13)。
+當前審查基準 Commit 為 `c2641ba` (2026-09-30)。
 
 ## Remote 設定
 

@@ -89,7 +89,7 @@ def test_baseline_file_is_valid_and_complete() -> None:
     assert baseline["repo"] == "https://github.com/Hao0321/claude-skill-social-post.git"
     assert baseline["branch"] == "main"
     assert len(baseline["reviewed_through"]) == 40
-    assert baseline["reviewed_through"] == "0c7b53ff9986ea3061c106f0b3f59f24304b4c49"
+    assert baseline["reviewed_through"] == "c2641ba5ac7d7f722f1cef54b03fbfe553502c7b"
     assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", baseline["reviewed_date"])
     assert isinstance(baseline["reviewed_pr_through"], int)
     assert isinstance(baseline["reviewed_issue_through"], int)
@@ -131,6 +131,6 @@ def test_baseline_matches_decisions_record() -> None:
     upstream = (ROOT / "docs" / "UPSTREAM.md").read_text(encoding="utf-8")
     baseline = json.loads((ROOT / "tools" / "upstream_baseline.json").read_text(encoding="utf-8"))
     assert baseline["reviewed_date"] in decisions
-    assert "0c7b53f" in upstream
+    assert "c2641ba" in upstream
     assert "Hao0321/claude-skill-social-post" in decisions
 
