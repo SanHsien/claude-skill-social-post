@@ -57,3 +57,24 @@
 - **觸發條件**：要用 Instagram／Threads 留言自動化，或 X 演算法文件被需要時，套用該 patch 並跑
   `tools\test_product.ps1`（含 Node 測試）後再採用。
 - **後果**：baseline 推進到 `c2641ba`，代表已審查，不代表已合併。
+
+## D-07: 上游審查 4 commit（c2641ba..e0720ed，2026-10-09）
+
+- **範圍**：上游 `main` 的 4 個 commit；PR 以 `--state all` 檢查至 #5，issue 以 `--state all` 檢查沒有項目；
+  分支 `fix/m10-metric-correction` 相對 main 沒有獨立 commit。
+- **決定**：
+  - `1d0a60f`（公開貢獻制度）：**reject**。它的 `CODEOWNERS`、治理文件、Hao 專屬審核權與 Ubuntu
+    Python 3.10/3.13 CI 不適用於本 fork；本 fork 已有維護者直接推送、繁中 `CONTRIBUTING.md` 與 Windows
+    Python 3.10–3.14 gate。日後若本 fork 改成接受外部 PR，才以 SanHsien 的治理者與 Windows gate 重新設計，
+    不照搬上游身分與 CI。
+  - `9f944e0`（本機 Workbench 與 AI handoff）：**defer**。它新增 loopback UI、資料 store、Node renderer
+    tests 與 Skill 路由，是完整新產品面，不是本 fork 現有缺陷的修正；目前也沒有使用者要求啟動此 UI。
+    觸發條件是使用者明確要求本機 Workbench，屆時以整個功能群組採用、跑產品與 Workbench tests，並另做程式碼審查。
+  - `46392bd`（Workbench listener/session 修正）：**not-applicable**。此修正只作用於前項尚未引入的
+    `workbench.py`／`workbench_test.py`；隨 Workbench 採用時一併重審，不能單獨移植。
+  - `e0720ed`（social learning 與寫作契約治理）：**defer**。它與 Workbench、JSONL learning、immutable
+    author contracts 及既有 `social_data.py`／`social_validation.py` 成套耦合，會碰觸本 fork 先前的
+    comment-security hardening。沒有可證明仍存在於本 fork 的獨立漏洞；若要採用，必須連同相依 feature、
+    privacy regression 與完整產品 gate 一起評估，不可只挑文件或單一 helper。
+- **後果**：baseline 推進到 `e0720ed` 表示四筆均已審查，不表示已合併。上游新的 commit、PR/issue 編號、
+  分支 head 或明確 Workbench 需求會重新觸發審查。
