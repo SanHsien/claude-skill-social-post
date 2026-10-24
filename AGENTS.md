@@ -14,15 +14,15 @@
 
 ## 硬性邊界
 
-- 不提交使用者輸入檔案、專有文件、API key、token、私鑰、瀏覽器 cookies 或 `.env`。
-- 不推送到 `upstream`。上游同步先跑 `python tools/check_upstream_updates.py`，逐筆審查後再 merge / cherry-pick；不盲目覆蓋 fork 文件與 Windows gate。
+- 不提交使用者輸入檔案、專有文件、私人帳本、API key、token、私鑰、瀏覽器 cookies 或 `.env`。
+- PR、push、release 一律指向 `SanHsien/claude-skill-social-post`；未經當次許可不得打向 `Hao0321/claude-skill-social-post`，也不推送到 `upstream`。上游同步先跑 `python tools/check_upstream_updates.py`，逐筆審查後再 merge / cherry-pick；不盲目覆蓋 fork 文件與 Windows gate。
 - 不要把維護 gate 改成完整產品依賴安裝。維護環境（`requirements-dev.txt`）僅安裝 pytest 與 ruff。
 - 不把 fork 包裝成原創產品，不移除上游作者駱君昊或官方連結。
 
 ## 技術與資料流
 
 - Skill 目錄：`social-post/`（`SKILL.md`、`references/`、`scripts/`）。
-- 核心腳本：`social-post/scripts/`（Python 成效分析、Node.js Chrome 自動化合約等）。
+- 核心腳本（以上游為準）：`social-post/scripts/`（Python 成效分析、Node.js Chrome 自動化合約等）。
 - 設定範本：`social-post/style_profile.example.md`、`social-post/voice_quick.md`。
 - `tools/`：fork 維護工具（Windows gate、上游檢查、相對連結檢查、依賴新鮮度）。
 - `tools/tests/`：維護契約測試。獨立於產品測試目錄。
