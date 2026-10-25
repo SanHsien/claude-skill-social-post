@@ -16,6 +16,8 @@
 - 審查上游分支 `fix/m10-metric-correction` 與 PR #4、#5，確認所有改動已 100% 併入 `main`。
 - 修復 CodeQL Alert #1（CWE-367 / js/file-system-race）：在 `comment_chrome_fixture_evidence_testonly.mjs` 透過檔案描述符校驗 `(dev, ino)` 防範路徑置換競態，並同步更新 JS 架構門禁契約（2026-09-28）。
 - 修復 CodeQL Alert #4（CWE-312 / py/clear-text-storage-sensitive-data）：重構 `self_test.py` 測試樣例變數名稱與測試特徵字串，消除 CodeQL 污點分析敏感資訊識別特徵（2026-09-28）。
+- 修復成效讀取可能拿到混合時點資料的問題：`validate_store`、`feature_matrix`、`feature_coverage_report`、`series_summary` 與 `log_outcome` 改由 `social_snapshot.py` 一次取得一致的 revision 快照，移植自上游 `bedeae8`（commit `30128ba`，2026-10-25；決策見 `docs/DECISIONS.md` D-08）。
+- 依賴新鮮度：`ruff` 0.17.2 經審查後以 `.github/dependency-deferrals.json` 記為延後，不靠提高宣告下限消紅燈（commit `f2a2271`，2026-10-25）。
 
 ## 接受、不改契約
 
