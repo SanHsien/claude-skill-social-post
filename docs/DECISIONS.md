@@ -24,7 +24,8 @@
 - **脈絡**：GitHub CLI 在 fork 專案中預設將 upstream 作為 default repository，極易誤開 PR 到原作者倉庫。
 - **決定**：
   - 設定 `gh repo set-default SanHsien/claude-skill-social-post`。
-  - 在 `.cursor/rules/no-upstream-pr.mdc` 與所有 AI 入口文件（`AGENTS.md`、`CLAUDE.md`、`GEMINI.md`）嚴格明文規範。
+  - 在 `.cursor/rules/no-upstream-pr.mdc` 與所有 AI 入口文件嚴格明文規範（2026-10 起 `CLAUDE.md`、`GEMINI.md`
+    已併入 `AGENTS.md`，只保留這一份）。
 - **後果**：杜絕意外向上游推送或誤開 PR 的風險。
 
 ## D-04: 上游分支、PR 與 Issue 審查清冊 (2026-09-13)
@@ -78,3 +79,21 @@
     privacy regression 與完整產品 gate 一起評估，不可只挑文件或單一 helper。
 - **後果**：baseline 推進到 `e0720ed` 表示四筆均已審查，不表示已合併。上游新的 commit、PR/issue 編號、
   分支 head 或明確 Workbench 需求會重新觸發審查。
+
+## D-08: 上游審查 3 commit（e0720ed..c22737a，2026-10-25）
+
+- **範圍**：上游 `main` 的 3 個 commit 與 PR #6（已合併，head `9aa920b`）。issue 水位 #5 以上沒有新項目
+  （2026-10-24 Upstream check 以 token 查證）；`git ls-remote` 無編號大於 #6 的 PR ref。分支
+  `fix/coherent-learning-snapshots-20261015` 為 `main` 的祖先，`fix/m10-metric-correction` 無獨立 commit。
+- **決定**：
+  - `bedeae8`（成效讀取一致快照）：**adopt（移植）**。本 fork 的 `validate_store`、`feature_matrix`、
+    `feature_coverage_report`、`series_summary` 逐檔讀五本 JSONL，`commit_records` 逐檔換檔，讀者可能
+    拿到混合時點資料並蓋上較新的 revision；`log_outcome.prepare_records` 的 base revision 與資料分兩次讀。
+    新增 `social_snapshot.py`／`social_snapshot_test.py`，`social_store`、`log_outcome` 與上游一致；
+    `social_data.py` 只移植快照讀取，不帶入延後中的 media family／owner scope（e0720ed）；
+    `workbench_service.py` 與 README 段落隨 Workbench（D-07）延後。
+  - `9aa920b`（v2.5.1：Threads canary 測試模組拆分、`audit.config.json`）：**defer**。只是測試重組，
+    且拆分的對象是 D-06 尚未採用的 `f2ba749` Threads 讀取器版本，本 fork 套不上也沒有對應缺陷。
+    觸發條件同 D-06：採用 `f2ba749` 時一併套用並跑 `tools\test_product.ps1`。
+  - `c22737a`（PR #6 merge commit）：無內容，隨上兩項處理。
+- **後果**：baseline 推進到 `c22737a`、PR #6；不代表已合併 `9aa920b`。

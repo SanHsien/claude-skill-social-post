@@ -2,7 +2,7 @@
 
 記錄如何安全、可重複地追蹤 [`Hao0321/claude-skill-social-post`](https://github.com/Hao0321/claude-skill-social-post) 的更新。
 
-當前審查基準 Commit 為 `e0720ed` (2026-10-09)。
+當前審查基準 Commit 為 `c22737a` (2026-10-25)。
 
 ## Remote 設定
 
@@ -29,6 +29,12 @@ Live inventory：上游 `main` 為 `e0720ed`；PR 使用 `--state all` 檢查到
 watermark #5 的項目；issue 使用 `--state all` 檢查沒有項目；除 `main` 外只剩
 `fix/m10-metric-correction`，其相對 `main` 為 behind 49、ahead 0，沒有獨立 commit。fork 沒有 open PR 或
 active workflow。四筆 main commit 的結論與可重審條件記在 [`DECISIONS.md`](DECISIONS.md#d-07-上游審查-4-commitc2641bae0720ed2026-10-09)。
+
+## 2026-10-25：`e0720ed..c22737a` 審查
+
+上游 `main` 為 `c22737a`（PR #6 merge）；PR ref 最大為 #6，issue 沒有大於 #5 的項目；
+`fix/coherent-learning-snapshots-20261015` 已併入 `main`。`bedeae8` 移植、`9aa920b` 延後，見
+[`DECISIONS.md`](DECISIONS.md#d-08-上游審查-3-commite0720edc22737a2026-10-25)。
 
 ## 檢查新更新
 

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Read outcome validation, feature matrix, coverage and series summaries from one coherent JSONL snapshot (ported from upstream `bedeae8`). Concurrent source drift is retried or rejected instead of mixing read times, and physical JSONL line boundaries are kept when captions contain Unicode line separators.
+
 ### Added
 
 - Source-owned, one-attempt Chrome reconnect on the exact cached-browser unavailable error only; working or empty tabs, timeouts, stale tabs and denial do not reselect. One real recovery was followed by a successful source-owned read of the original target, without clearing claims or resending.

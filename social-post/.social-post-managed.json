@@ -154,6 +154,8 @@
     "scripts/social_data.py",
     "scripts/social_data_feature_matrix_test.py",
     "scripts/social_post_analysis.py",
+    "scripts/social_snapshot.py",
+    "scripts/social_snapshot_test.py",
     "scripts/social_store.py",
     "scripts/social_test_schema_time_validation.py",
     "scripts/social_validation.py",
