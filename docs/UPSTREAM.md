@@ -13,14 +13,16 @@ git remote -v
 # upstream  https://github.com/Hao0321/claude-skill-social-post.git (fetch & push)
 ```
 
-## 上游分支與 PR 審查清冊 (2026-10-09 基準)
+## 上游分支與 PR 審查清冊 (2026-10-25 基準)
 
 | 上游對象 | 類別 | 狀態 | 審查評估結論 |
 |---|---|---|---|
-| `main` | 主分支 | 正常同步 | 已同步至本 fork `origin/main` |
+| `main` | 主分支 | 已審查至 `c22737a` | 部分延後（D-06、D-07、D-08），不等於全部已合併 |
 | `fix/m10-metric-correction` | 分支 | 已合併落後 | 所有 commits 早已併入 `main`，無需引進 |
 | `#4` | Pull Request | 已合併 (2026-07-16) | 修正第一篇爆款數據為 FB 洞察真值 (M10)，已包含於主線 |
 | `#5` | Pull Request | 已合併 (2026-08-11) | v2.0.0: 結構化成效學習引擎，已包含於主線 |
+| `fix/coherent-learning-snapshots-20261015` | 分支 | 已合併 | 為上游 `main` 祖先，內容即 PR #6 |
+| `#6` | Pull Request | 已合併 (2026-10-16) | 一致快照（`bedeae8`，已移植）與 v2.5.1 測試拆分（`9aa920b`，延後），見 D-08 |
 | Issues | 議題追蹤 | 0 open | 上游目前無任何未結議題 |
 
 ## 2026-10-09：`c2641ba..e0720ed` 審查
