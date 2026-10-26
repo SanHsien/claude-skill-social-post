@@ -97,3 +97,32 @@ def test_report_names_both_exits_so_the_next_person_does_not_invent_a_third() ->
     assert "freshness-hold:" in report
     assert "dependency-deferrals.json" in report
     assert "mute button" in report
+
+
+def test_bom_does_not_hide_the_first_requirement(tmp_path: Path) -> None:
+    (tmp_path / "requirements-dev.txt").write_bytes(
+        "pytest>=8\nruff>=0.16\n".encode("utf-8-sig")
+    )
+    names = [p["name"] for p in checker.load_direct_dependencies(tmp_path)]
+    assert names == ["pytest", "ruff"]
+
+
+def test_bom_does_not_discard_the_deferrals_file(tmp_path: Path) -> None:
+    path = tmp_path / "d.json"
+    path.write_bytes(
+        json.dumps({"deferrals": {"ruff": {"deferredLatest": "1", "reason": "r"}}}).encode(
+            "utf-8-sig"
+        )
+    )
+    assert checker.load_deferrals(path) == {"ruff": ("1", "r")}
+
+
+def test_deferral_matches_a_name_spelled_with_underscores(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(checker, "fetch_pypi_version", lambda name: "9.1.0")
+    packages = checker.parse_requirements("typing_extensions>=4\n", "requirements-dev.txt")
+    rows = checker.collect_status(
+        packages, deferrals={"typing-extensions": ("9.1", "reviewed")}
+    )
+    assert checker.needs_review(rows[0]) is False

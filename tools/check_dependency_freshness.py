@@ -38,6 +38,10 @@ class DependencyCheckError(RuntimeError):
     """Raised when a requirements file cannot be read."""
 
 
+def _normalize(name: str) -> str:
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
 def release_key(version: str) -> tuple[int, ...] | None:
     match = _RELEASE_RE.match(version.strip())
     if not match:
@@ -57,7 +61,7 @@ def is_newer_version(latest: str, declared: str) -> bool:
 
 def load_deferrals(path: Path = DEFERRALS_PATH) -> dict[str, tuple[str, str]]:
     try:
-        entries = json.loads(path.read_text(encoding="utf-8")).get("deferrals", {})
+        entries = json.loads(path.read_text(encoding="utf-8-sig")).get("deferrals", {})
     except (OSError, ValueError):
         return {}
     deferrals: dict[str, tuple[str, str]] = {}
@@ -67,7 +71,7 @@ def load_deferrals(path: Path = DEFERRALS_PATH) -> dict[str, tuple[str, str]]:
         latest = str(entry.get("deferredLatest", "")).strip()
         reason = str(entry.get("reason", "")).strip()
         if latest and reason:
-            deferrals[name.lower()] = (latest, reason)
+            deferrals[_normalize(name)] = (latest, reason)
     return deferrals
 
 
@@ -104,8 +108,8 @@ def load_direct_dependencies(root: Path = REPO_ROOT) -> list[dict[str, str]]:
         path = root / name
         if not path.is_file():
             raise DependencyCheckError(f"missing requirements file: {name}")
-        for package in parse_requirements(path.read_text(encoding="utf-8"), name):
-            key = package["name"].lower().replace("_", "-")
+        for package in parse_requirements(path.read_text(encoding="utf-8-sig"), name):
+            key = _normalize(package["name"])
             if key in seen:
                 continue
             seen.add(key)
@@ -137,7 +141,7 @@ def collect_status(
     for package in packages:
         minimum = package["minimum"]
         latest = fetch_pypi_version(package["name"])
-        reviewed, reason = deferrals.get(package["name"].lower(), ("", ""))
+        reviewed, reason = deferrals.get(_normalize(package["name"]), ("", ""))
         deferred = bool(reviewed and latest and not is_newer_version(latest, reviewed))
         rows.append(
             {
