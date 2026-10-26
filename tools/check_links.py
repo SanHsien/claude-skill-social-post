@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -67,6 +68,21 @@ def iter_documents() -> list[Path]:
     return required
 
 
+def _exists_exact_case(target: Path) -> bool:
+    if not target.exists():
+        return False
+    try:
+        parts = target.relative_to(ROOT).parts
+    except ValueError:
+        return True
+    current = ROOT
+    for part in parts:
+        if part not in os.listdir(current):
+            return False
+        current = current / part
+    return True
+
+
 def _missing_relative(path: Path, target: str) -> str | None:
     target = target.strip().strip("<>")
     if not target or target.startswith(SKIP_PREFIXES):
@@ -74,8 +90,12 @@ def _missing_relative(path: Path, target: str) -> str | None:
     file_part = unquote(target.split("#", 1)[0])
     if not file_part:
         return None
-    resolved = (path.parent / file_part).resolve()
-    if resolved.exists():
+    # GitHub resolves `/x.md` from the repo root and matches names case-sensitively;
+    # a Windows `exists()` does neither, so check both by hand. normpath (not
+    # resolve) keeps the spelling as written.
+    base = ROOT if file_part.startswith("/") else path.parent
+    resolved = Path(os.path.normpath(base / file_part.lstrip("/")))
+    if _exists_exact_case(resolved):
         return None
     try:
         shown = resolved.relative_to(ROOT)
