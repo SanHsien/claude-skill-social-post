@@ -49,3 +49,20 @@ def test_a_real_broken_link_is_still_reported(tree: Path) -> None:
 
 def test_a_broken_image_is_reported_once(tree: Path) -> None:
     assert len(problems(tree, "![圖](missing.png)")) == 1
+
+
+def test_info_string_line_does_not_close_a_fence(tree: Path) -> None:
+    text = "```\n```bash\nx\n```\n[壞](nope.md)\n"
+    assert len(problems(tree, text)) == 1
+
+
+def test_long_backtick_run_does_not_hang(tree: Path) -> None:
+    import time
+
+    start = time.perf_counter()
+    problems(tree, "`" * 20000 + "a [壞](nope.md)")
+    assert time.perf_counter() - start < 2
+
+
+def test_unclosed_code_run_does_not_hide_a_link(tree: Path) -> None:
+    assert len(problems(tree, "``a` [壞](nope.md)")) == 1

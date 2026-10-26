@@ -24,7 +24,8 @@ LINK_PATTERN = re.compile(
     r"""(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*\)"""
 )
 FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})")
-INLINE_CODE_PATTERN = re.compile(r"(`+)(?:(?!\1).)+?\1")
+INLINE_CODE_PATTERN = re.compile(r"(?<!`)(`+)(?!`).+?(?<!`)\1(?!`)")
+FENCE_CLOSE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})[ \t]*$")
 HTML_SRC_PATTERN = re.compile(r"""(?is)<img[^>]+src=["']([^"']+)["']""")
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "tel:", "#")
 SKIP_NAMES = {
@@ -111,6 +112,7 @@ def _strip_code(text: str) -> str:
     for line in text.splitlines():
         marker = FENCE_PATTERN.match(line)
         if fence:
+            marker = FENCE_CLOSE_PATTERN.match(line)
             if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence):
                 fence = ""
             continue
