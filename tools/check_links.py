@@ -14,8 +14,16 @@ from pathlib import Path
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parent.parent
-LINK_PATTERN = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
-IMAGE_PATTERN = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
+# Inline link or image: `[text](target)` / `![alt](target "title")`. The target is
+# either `<...>` or a run without spaces that may hold one level of balanced
+# parentheses (`guide(1).md`); an optional quoted or parenthesised title follows.
+# Images need no pattern of their own: `!` precedes the same `[alt](target)` shape.
+LINK_PATTERN = re.compile(
+    r"\[[^\]]*\]\(\s*(<[^>]*>|(?:[^()\s]|\([^()\s]*\))+)"
+    r"""(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*\)"""
+)
+FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})")
+INLINE_CODE_PATTERN = re.compile(r"(`+)(?:(?!\1).)+?\1")
 HTML_SRC_PATTERN = re.compile(r"""(?is)<img[^>]+src=["']([^"']+)["']""")
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "tel:", "#")
 SKIP_NAMES = {
@@ -76,10 +84,27 @@ def _missing_relative(path: Path, target: str) -> str | None:
     return f"{target} → 找不到 {shown}"
 
 
+def _strip_code(text: str) -> str:
+    """Drop fenced blocks and inline code: links written there are examples."""
+    kept: list[str] = []
+    fence = ""
+    for line in text.splitlines():
+        marker = FENCE_PATTERN.match(line)
+        if fence:
+            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence):
+                fence = ""
+            continue
+        if marker:
+            fence = marker.group(1)
+            continue
+        kept.append(INLINE_CODE_PATTERN.sub("", line))
+    return "\n".join(kept)
+
+
 def check_document(path: Path) -> list[str]:
     problems: list[str] = []
-    text = path.read_text(encoding="utf-8")
-    for pattern in (LINK_PATTERN, IMAGE_PATTERN, HTML_SRC_PATTERN):
+    text = _strip_code(path.read_text(encoding="utf-8"))
+    for pattern in (LINK_PATTERN, HTML_SRC_PATTERN):
         for match in pattern.finditer(text):
             missing = _missing_relative(path, match.group(1))
             if missing:
