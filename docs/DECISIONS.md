@@ -97,3 +97,9 @@
     觸發條件同 D-06：採用 `f2ba749` 時一併套用並跑 `tools\test_product.ps1`。
   - `c22737a`（PR #6 merge commit）：無內容，隨上兩項處理。
 - **後果**：baseline 推進到 `c22737a`、PR #6；不代表已合併 `9aa920b`。
+
+## D-09: Ruff 0.17.3 新鮮度裁決（2026-11-05）
+
+- **脈絡**：PyPI Ruff 已由既有延後紀錄的 0.17.2 更新到 0.17.3；`ruff>=0.16` 是相容性下限，並非精確釘版。
+- **決定**：採逐版延後裁決，將 `.github/dependency-deferrals.json` 的 `deferredLatest` 更新為 0.17.3；不調高下限。已檢視 [官方發布說明](https://github.com/astral-sh/ruff/releases/tag/0.17.3) 與 [PyPI Python 需求](https://pypi.org/project/ruff/0.17.3/)（>=3.7），並使用 Ruff 0.17.3 通過完整 Windows 維護 gate。
+- **後果**：保留既有相容性承諾與 E9/F 檢查範圍；PyPI 超過 0.17.3 時此裁決自動失效並重新審查。本機 pytest 使用 worktree 內的獨立暫存目錄，避免共用暫存目錄權限衝突。

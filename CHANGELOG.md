@@ -24,6 +24,7 @@
 
 ### Changed
 
+- Reviewed dependency freshness against Ruff 0.17.3 and renewed its version-scoped deferral after the Windows maintenance gate passed; retained the `>=0.16` compatibility floor.
 - Split long scan/send/domain contracts and platform readers into focused modules while preserving prior exports and guards. Bind every extracted authority dependency into canary and promotion source inventories.
 - Separate pure document checks from runtime authority and DOM-CUA node identity from send-policy/context validation, preserving prior exports and exact source-hash inventories. No length threshold or exception was added for these changes.
 - Split surface/textarea tests and move the reinspection JSON example into the validation reference without changing its fields. Live adapter candidate revision is `2026-08-31.6`; runtime authority revision is `2026-08-31.2`.

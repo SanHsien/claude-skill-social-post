@@ -1,8 +1,8 @@
 {
   "deferrals": {
     "ruff": {
-      "deferredLatest": "0.17.2",
-      "reason": "2026-10-25 reviewed: dev gate (E9+F on tools/) passes on ruff 0.17.2; floor >=0.16 already admits 0.17, kept as the compatibility promise"
+      "deferredLatest": "0.17.3",
+      "reason": "2026-11-05 reviewed: 0.17.3 release notes and Python >=3.7 support checked; Windows dev gate passes with ruff 0.17.3. No pin or floor bump is needed because >=0.16 already permits this release; retain the compatibility floor and reassess when PyPI advances."
     }
   }
 }
