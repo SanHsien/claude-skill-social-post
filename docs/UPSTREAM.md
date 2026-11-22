@@ -23,10 +23,10 @@ git remote -v
 | `#5` | Pull Request | 已合併 (2026-08-11) | v2.0.0: 結構化成效學習引擎，已包含於主線 |
 | `fix/coherent-learning-snapshots-20261015` | 分支 | 已合併 | 為上游 `main` 祖先，內容即 PR #6 |
 | `#6` | Pull Request | 已合併 (2026-10-16) | 一致快照（`bedeae8`，已移植）與 v2.5.1 測試拆分（`9aa920b`，延後），見 D-08 |
-| `#8` | Pull Request | 開放中（`3574066`） | 部分採用（`social_validation.py` 缺 `tzdata` 提示、測試與 `docs/setup.md`）；其餘跳過並釘入 `monitored`，見 D-10 |
-| `#9` | Pull Request | 開放中（`671cdc6`） | 延後並釘入 `monitored`（依賴 D-07 延後之 `e0720ed` 結構），見 D-10 |
-| `#7` | Issue | 開放中 | 已確認並採核心修正解決 Windows 缺 `tzdata` 誤報問題，見 D-10 |
-| `#10` | Issue | 開放中 | 拒絕（外部推廣與未審查套件／端點邀請，非程式缺陷），見 D-10 |
+| `#8` | Pull Request | 開放中（`3574066`） | 部分採用（`social_validation.py` 缺 `tzdata` 提示、測試與 `docs/setup.md`）；其餘跳過並釘入 `monitored`，見 D-11 |
+| `#9` | Pull Request | 開放中（`671cdc6`） | 延後並釘入 `monitored`（依賴 D-07 延後之 `e0720ed` 結構），見 D-11 |
+| `#7` | Issue | 開放中 | 已確認並採核心修正解決 Windows 缺 `tzdata` 誤報問題，見 D-11 |
+| `#10` | Issue | 開放中 | 拒絕（外部推廣與未審查套件／端點邀請，非程式缺陷），見 D-11 |
 | Issues | 議題追蹤 | 盤點至 `#10` | 2026-11-22 實查至 `#10`，`#10` 以下無未審項目 |
 
 ## 2026-10-09：`c2641ba..e0720ed` 審查
