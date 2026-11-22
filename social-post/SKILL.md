@@ -7,7 +7,7 @@ description: 學習使用者的 Facebook／Instagram／YouTube／Threads／X 語
 
 把內容生成、實際發布與成效學習分開。依意圖只讀必要資料，不把整個案例庫一次塞進 context。
 
-P5 執行前先核對 `references/chrome-comment-adapter.md` 的當前狀態：舊 SDK 的 IG 單則 canary 已完成真實送出及唯讀 recovery 對帳；2026-09-05 當前 CUA 的 Threads 單則 canary 已送出一次並取得原生 own-child 正向觀測，canonical ledger 尚為 `needs_reconcile`。exact-tab recovery 來源修正已通過 focused tests；當前 Chrome 控制連線無法進行原生檢查，真實唯讀結算尚待恢復連線後完成，未新增 recovery／rotation 事件。當前 CUA 送出只支援 Threads 單則候選，泛用 production 仍關閉。target-only 不代表整篇／回覆串已掃完，semantic UI continuity 不代表實體 document epoch 或持久 node identity。單則實證不代表三平台完整自動回覆完成，也不會自動升級 capability；不得用 fixture 或候選程式存在代替其他真實送出證據。
+P5 執行前核對 `references/chrome-comment-adapter.md` 的當前狀態；各平台送出實證與 ledger 結算狀態以該檔為準，這裡不重複。當前 CUA 送出只支援 Threads 單則候選；FB 送出與三平台批次仍未完成，泛用 production 關閉。target-only 不代表整篇／回覆串已掃完，semantic UI continuity 不代表實體 document epoch 或持久 node identity。單則實證不升級整體 capability，fixture 或候選程式存在也不能代替真實操作證據。
 
 ## Session 啟動
 

@@ -103,3 +103,9 @@
 - **脈絡**：PyPI Ruff 已由既有延後紀錄的 0.17.2 更新到 0.17.3；`ruff>=0.16` 是相容性下限，並非精確釘版。
 - **決定**：採逐版延後裁決，將 `.github/dependency-deferrals.json` 的 `deferredLatest` 更新為 0.17.3；不調高下限。已檢視 [官方發布說明](https://github.com/astral-sh/ruff/releases/tag/0.17.3) 與 [PyPI Python 需求](https://pypi.org/project/ruff/0.17.3/)（>=3.7），並使用 Ruff 0.17.3 通過完整 Windows 維護 gate。
 - **後果**：保留既有相容性承諾與 E9/F 檢查範圍；PyPI 超過 0.17.3 時此裁決自動失效並重新審查。本機 pytest 使用 worktree 內的獨立暫存目錄，避免共用暫存目錄權限衝突。
+
+## D-10: SKILL.md 開頭的 P5 狀態快照改為指向 adapter（2026-11-22）
+
+- **脈絡**：`social-post/SKILL.md` 開頭把 2026-09-05 那一輪的 canary／ledger 狀態（`needs_reconcile`、Chrome 連線中斷等）寫進每次都會載入的 skill 本文，與 `references/chrome-comment-adapter.md` 的同一段重複；狀態一變兩份就會矛盾。
+- **決定**：照上游 `c22737a` 的寫法縮成一段沒有日期的現況摘要，送出實證與 ledger 結算只留在 adapter。上游那段的平台狀態（Threads 已對帳、CUA IG 已接入）與本 fork 的 adapter 不同，所以只採寫法、不照抄事實；其餘上游 SKILL.md 改動仍依 D-07 延後。
+- **後果**：日後採用上游 SKILL.md 時，這一行以上游版為準並重新核對 adapter 現況。
