@@ -109,3 +109,19 @@
 - **脈絡**：`social-post/SKILL.md` 開頭把 2026-09-05 那一輪的 canary／ledger 狀態（`needs_reconcile`、Chrome 連線中斷等）寫進每次都會載入的 skill 本文，與 `references/chrome-comment-adapter.md` 的同一段重複；狀態一變兩份就會矛盾。
 - **決定**：照上游 `c22737a` 的寫法縮成一段沒有日期的現況摘要，送出實證與 ledger 結算只留在 adapter。上游那段的平台狀態（Threads 已對帳、CUA IG 已接入）與本 fork 的 adapter 不同，所以只採寫法、不照抄事實；其餘上游 SKILL.md 改動仍依 D-07 延後。
 - **後果**：日後採用上游 SKILL.md 時，這一行以上游版為準並重新核對 adapter 現況。
+
+## D-11: 上游審查 PR #8、#9 與 Issue #7、#10（c22737a，2026-11-22）
+
+- **範圍**：上游 `main` 自 `c22737a` 後無新增 commit；PR 檢查至 `#9`（#8、#9 皆為 `open`），Issue 檢查至 `#10`（#7、#10 皆為 `open`）。
+- **決定**：
+  - **Issue #7**（Windows 全新 Python 缺 `tzdata` 時誤判 `'Asia/Taipei'` 為不認得的時區）與 **PR #8**（`357406603815d2eabd5b67691bd38088d451e653`，`open`）：**部分採用（移植核心修正與測試；不採冗餘設定；PR #8 釘入 `monitored`）**。
+    - 採用：`social-post/scripts/social_validation.py` 在 `(ZoneInfoNotFoundError, ValueError)` 且 `not available_timezones()` 時保持 fail-closed 並提示缺少 IANA 時區資料庫與 `python -m pip install tzdata`；`social-post/scripts/social_test_schema_time_validation.py` 新增 `check_missing_timezone_database` 與 `Asia/Taipe` 測試；`docs/setup.md` Windows 段落補上 `python -m pip install tzdata` 說明（未帶入 PR #8 的 `\r` 轉義筆誤）。
+    - 不採／跳過：PR #8 新增 `requirements.txt`、修改 `CONTRIBUTING.md` 及新增 `.github/workflows/ci.yml` job——本 fork 已有 `requirements-dev.txt`（含 `tzdata>=2024.1`）、`tools/bootstrap_dev.ps1` 與 Python 3.10–3.14 `windows-latest` CI（D-01）。
+    - 重看條件：PR #8 合併進上游 `main`、head SHA 變動或關閉時，核對最終合入內容；Issue #7 若補充額外行為需求時再重審。
+  - **PR #9**（`Add read-only Social Post outcome intake review`，head `671cdc63a2d76765e81c47045a5e6b7bc7549d96`，`open`）：**延後（釘入 `monitored`）**。
+    - 理由：尚未合併進上游 `main`，且 `review_outcome_intakes.py` 依賴的 `social_primitives`、`owner_scope` 與 `data/outcome_intakes.jsonl` 屬 D-07 已延後之 `e0720ed` 範圍，本 fork 無該前置模組，亦非現存缺陷修正；diff（7 檔 +483/-1）無安全拒收項。
+    - 重看條件：PR #9 合併進上游 `main`、head SHA 變動，或本 fork 依 D-07 決定引進 `e0720ed` 相關結構時重審並跑 `tools\test_product.ps1`。
+  - **Issue #10**（`你的技能《claude-skill-social-post》的 1VR 体检报告 + 设计伙伴邀请`，`open`）：**拒絕（不追）**。
+    - 理由：外部推廣與設計夥伴邀請，推銷未經審查的第三方套件（`silicon-teahouse`）與外部 API 端點（`1vr.com`），僅匹配 README 的 `git clone` 指令，非程式碼缺陷報告；不引入第三方網路端點或安裝其提及之套件。
+    - 重看條件：無需重看（除非上游作者日後針對本體另開實質程式碼 Issue，依新編號評估）。
+- **後果**：`tools/upstream_baseline.json` 更新 `reviewed_date` 為 `2026-11-22`、`reviewed_through` 維持 `c22737a33d6cf09c48690f8be076b28bffc43a67`、`reviewed_pr_through` 推進至 `9`、`reviewed_issue_through` 推進至 `10`，並以 `monitored` 追蹤未合併 PR `#8` 與 `#9`。

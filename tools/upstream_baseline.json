@@ -2,8 +2,20 @@
   "repo": "https://github.com/Hao0321/claude-skill-social-post.git",
   "branch": "main",
   "reviewed_through": "c22737a33d6cf09c48690f8be076b28bffc43a67",
-  "reviewed_date": "2026-10-25",
-  "reviewed_pr_through": 6,
-  "reviewed_issue_through": 5,
+  "reviewed_date": "2026-11-22",
+  "reviewed_pr_through": 9,
+  "reviewed_issue_through": 10,
+  "monitored": [
+    {
+      "item": "pr#8",
+      "head": "357406603815d2eabd5b67691bd38088d451e653",
+      "state": "open"
+    },
+    {
+      "item": "pr#9",
+      "head": "671cdc63a2d76765e81c47045a5e6b7bc7549d96",
+      "state": "open"
+    }
+  ],
   "decision_log": "docs/DECISIONS.md"
 }
